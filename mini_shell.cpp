@@ -46,20 +46,23 @@ void getCommandArgs(string &command, vector<string> &arguments,
       break;
     }
     command.push_back(str[i]);
+  }
 
-    if (idx == -1) {
-      // Means no space it only contains command no arguments
-      return;
+  if (idx == -1) {
+    // Means no space it only contains command no arguments
+    return;
+  }
+  string temp = "";
+  for (int i = idx + 1; i < str.size(); i++) {
+    if (str[i] == ' ') {
+      arguments.push_back(temp);
+      temp = "";
+      continue;
     }
-    string temp = "";
-    for (int i = idx + 1; i < str.size(); i++) {
-      if (str[i] == ' ') {
-        arguments.push_back(temp);
-        temp = "";
-        continue;
-      }
-      temp += str[i];
-    }
+    temp += str[i];
+  }
+  if (!temp.empty()) {
+    arguments.push_back(temp);
   }
 }
 int main(int argc, char **argv) {
@@ -88,7 +91,7 @@ int main(int argc, char **argv) {
     // this works but it does not trim whitespaces from the front and back ->
     // now it does work
 
-    // Now we need to split into command and arguments
+    // Now we need to split into command and arguments -> Done
     string command = "";
     vector<string> arguments;
 
@@ -99,5 +102,19 @@ int main(int argc, char **argv) {
 
     for (string &s : arguments)
       cout << s << " ";
+
+    // Now stage 3 we need to use fork to copy the process and that child will
+    // become the command and then executes it while the parent waits for the
+    // process to complete
+    // TODO: need to understand how to use fork -> man pages
+    pid_t pid = fork();
+    // -1 on error
+    if (pid < 0) {
+      perror("fork");
+      exit(EXIT_FAILURE);
+    }
+    if (pid == 0) {
+      // Child will call the execvp and executes the command + arguments
+    }
   }
 }
