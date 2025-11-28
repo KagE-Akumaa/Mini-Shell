@@ -1,5 +1,8 @@
+#include <cstdlib>
 #include <iostream>
+#include <limits.h>
 #include <string>
+#include <sys/wait.h>
 #include <unistd.h>
 #include <vector>
 
@@ -103,18 +106,65 @@ int main(int argc, char **argv) {
     for (string &s : arguments)
       cout << s << " ";
 
-    // Now stage 3 we need to use fork to copy the process and that child will
-    // become the command and then executes it while the parent waits for the
-    // process to complete
-    // TODO: need to understand how to use fork -> man pages
-    pid_t pid = fork();
-    // -1 on error
-    if (pid < 0) {
-      perror("fork");
-      exit(EXIT_FAILURE);
+    // First we need to check if the command are like cd which changes the
+    // parent we dont need to do the fork as changes wont reflect
+
+    if (command == "cd") {
+      // we need to run the chdir system call for this
+      // chdir(takes in the path)
+      if (arguments.size() == 0) {
+        // we can cd to home
+        if (chdir(getenv("HOME")) != 0) {
+          perror("cd");
+        }
+      } else {
+        if (chdir(arguments[0].c_str()) != 0) {
+          perror("cd");
+          // No need to exit if it fails it will give the message itself
+        }
+      }
+      continue;
+    } else if (command == "pwd") {
+      char name[PATH_MAX];
+      if (getcwd(name, PATH_MAX) == nullptr) {
+        perror("getcwd");
+      } else {
+        cout << name << endl;
+      }
+      continue;
+    } else if (command == "exit") {
+      exit(EXIT_SUCCESS);
     }
-    if (pid == 0) {
-      // Child will call the execvp and executes the command + arguments
+    // Now stage 3 we
+    //  need to use fork to copy the process and that child will become the
+    //  command and then executes it while the parent waits for the process to
+    //  complete
+    //  TODO: need to understand how to use fork -> man pages
+    else {
+      pid_t pid = fork();
+      // -1 on error
+      if (pid < 0) {
+        perror("fork");
+        exit(EXIT_FAILURE);
+      }
+      if (pid == 0) {
+        // Child will call the execvp and executes the command + arguments
+        // for execvp we need to convert the arguments to char* [] and it should
+        // end with a NULL and the arr[0] will have the command
+        char *arr[arguments.size() + 2];
+        arr[0] = (char *)command.c_str();
+        for (int i = 0; i < arguments.size(); i++) {
+          arr[i + 1] = (char *)arguments[i].c_str();
+        }
+        arr[arguments.size() + 1] = NULL;
+
+        if (execvp(command.c_str(), arr) < 0) {
+          perror("execvp");
+          exit(EXIT_FAILURE);
+        }
+      } else {
+        waitpid(pid, NULL, 0);
+      }
     }
   }
 }
