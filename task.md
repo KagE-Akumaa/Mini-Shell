@@ -216,3 +216,37 @@ cd modifies the process directory — why must this be in the parent?
 What will happen if user types: cd with no arguments?
 
 How will you fetch current working directory?
+
+
+⭐️ 4. HOW TO REWRITE YOUR SHELL WITH OS KNOWLEDGE
+
+Here’s the roadmap using your new understanding:
+
+🟩 Step 1 — Clean up command parsing
+
+remove checkSpaces() complexity
+
+use stringstream or tokenization
+
+parse operators: |, <, >, >>, &
+
+🟩 Step 2 — Improve fork + exec correctness
+
+Use vector<char*> → avoids invalid memory.
+
+🟩 Step 3 — Add background processes
+
+Use:
+
+if (background) skip waitpid()
+
+🟩 Step 4 — Add pipes (multi-pipe chained)
+
+This is a big jump.
+Your OS knowledge makes it possible now.
+
+🟩 Step 5 — Add redirection
+
+Use dup2().
+
+🟩 Step 6 — Add environment variable support**
