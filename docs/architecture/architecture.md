@@ -168,10 +168,6 @@ All UML diagrams were created in Excalidraw.
 
 Editable source board: ```
 ../diagrams/shell_design.excalidraw
-```
-
-
-
 ---
 
 # 8. Conclusion
