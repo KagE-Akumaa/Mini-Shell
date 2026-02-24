@@ -31,7 +31,7 @@ The diagram below shows the execution lifecycle:
 - Output is displayed back to user
 
 ### **Sequence Diagram**
-![Sequence Diagram](../diagrams/shell_class_diagram.svg)
+![Sequence Diagram](../diagrams/shell_sequence_diagram.svg)
 
 ---
 
