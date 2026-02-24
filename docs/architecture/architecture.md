@@ -31,7 +31,7 @@ The diagram below shows the execution lifecycle:
 - Output is displayed back to user
 
 ### **Sequence Diagram**
-![Sequence Diagram](./diagrams/shell_sequence_diagram.svg)
+![Sequence Diagram](../diagrams/shell_class_diagram.svg)
 
 ---
 
@@ -50,7 +50,7 @@ The Shell is responsible for:
 - Managing lifetime of Parser and Executor  
 
 ### **Shell UML**
-![Shell Class Diagram](./diagrams/shell_class_diagram.svg)
+![Shell Class Diagram](../diagrams/shell_class_diagram.svg)
 
 ---
 
@@ -64,7 +64,7 @@ The Parser handles:
 It does **not** store parsed commands internally.
 
 ### **Parser UML**
-![Parser Class Diagram](./diagrams/parser_class_diagram.svg)
+![Parser Class Diagram](../diagrams/parser_class_diagram.svg)
 
 ---
 
@@ -77,7 +77,7 @@ The `Command` object contains:
 It is a pure data structure returned by the Parser.
 
 ### **Command UML**
-![Command Class Diagram](./diagrams/command_class_diagram.svg)
+![Command Class Diagram](../diagrams/command_class_diagram.svg)
 
 ---
 
@@ -91,7 +91,7 @@ The Executor is responsible for:
 It aggregates the `Builtins` component.
 
 ### **Executor UML**
-![Executor Class Diagram](./diagrams/executor_class_diagram.svg)
+![Executor Class Diagram](../diagrams/executor_class_diagram.svg)
 
 ---
 
@@ -105,7 +105,7 @@ The Builtins component implements:
 These commands run **inside the shell process**, without calling `fork()`.
 
 ### **Builtins UML**
-![Builtins Class Diagram](./diagrams/builtins_class_diagram.svg)
+![Builtins Class Diagram](../diagrams/builtins_class_diagram.svg)
 
 ---
 
@@ -167,7 +167,7 @@ The current architecture supports adding these features cleanly.
 All UML diagrams were created in Excalidraw.
 
 Editable source board: ```
-./diagrams/shell_design.excalidraw
+../diagrams/shell_design.excalidraw
 ```
 
 
