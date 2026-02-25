@@ -1,0 +1,32 @@
+# Build directory
+/build/
+/build*/            # covers build, build-debug, build-release
+/CMakeFiles/
+/CMakeCache.txt
+cmake_install.cmake
+install_manifest.txt
+Makefile
+
+# Compiled artifacts
+*.o
+*.obj
+*.a
+*.so
+*.dll
+*.dylib
+*.exe
+
+# Clangd and LSP caches
+.cache/
+.clangd/
+compile_commands.json
+
+# Editor/IDE files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Logs
+*.log
