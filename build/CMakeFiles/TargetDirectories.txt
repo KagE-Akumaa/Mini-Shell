@@ -1,0 +1,3 @@
+/home/akumaa/projects/Mini-Shell/build/CMakeFiles/mini_shell.dir
+/home/akumaa/projects/Mini-Shell/build/CMakeFiles/edit_cache.dir
+/home/akumaa/projects/Mini-Shell/build/CMakeFiles/rebuild_cache.dir
