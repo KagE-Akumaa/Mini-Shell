@@ -4,8 +4,8 @@
 
 class Command {
 private:
-  std::vector<std::string> arguments;
   std::string program;
+  std::vector<std::string> arguments;
 
 public:
   Command(std::string program, std::vector<std::string> arguments);
