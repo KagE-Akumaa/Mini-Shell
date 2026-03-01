@@ -25,6 +25,7 @@ void checkSpaces(string &str) {
     // Means no charcter
     return;
   }
+  cout << str;
   while (str.back() == ' ') {
     str.pop_back();
   }
@@ -37,7 +38,6 @@ void checkSpaces(string &str) {
       oneSpace = true;
     temp.push_back(str[i]);
   }
-  str = temp;
 }
 void getCommandArgs(string &command, vector<string> &arguments,
                     const string &str) {
@@ -64,6 +64,7 @@ void getCommandArgs(string &command, vector<string> &arguments,
     }
     temp += str[i];
   }
+  cout << temp;
   if (!temp.empty()) {
     arguments.push_back(temp);
   }
