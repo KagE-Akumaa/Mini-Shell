@@ -1,139 +1,145 @@
-# 🐚 Mini Shell (C++17)
+# Mini-Shell
 
-A lightweight Unix-style shell implemented in modern C++ with support
-for built-in commands, external program execution, and proper
-POSIX-compliant behavior.\
-This shell will later be integrated into a **custom Qt-based terminal
-UI**.
+A lightweight Unix shell implemented in modern C++17. Supports built-in commands, external program execution via `fork`/`execvp`, and a clean layered architecture designed for extensibility.
 
-## 🚀 Features
+> Demo GIF coming soon — recorded with asciinema
 
-### ✔ Built-in Commands
+---
 
-  Command   Description
-  --------- ----------------------------------------------
-  `cd`      Change directory (`cd`, `cd <path>`, `cd -`)
-  `pwd`     Print the current working directory
-  `exit`    Exit the shell
+## Features
 
-### ✔ External Program Execution
+**Built-in commands**
 
--   Supports running standard system programs (`ls`, `cat`, `grep`,
-    etc.)
--   Uses correct `fork()` + `execvp()` model
--   Parent process waits using `waitpid()`
--   Safe child process termination using `_exit()`
+| Command | Behavior |
+|--------|----------|
+| `cd <path>` | Change to the given directory |
+| `cd` | Change to home directory |
+| `cd -` | Switch to previous directory |
+| `pwd` | Print current working directory |
+| `exit` | Exit the shell |
 
-### ✔ Shell Context Tracking
+**External program execution**
 
-The shell maintains: - `currentDir` --- current working directory\
-- `previousDir` --- directory used for `cd -`
+- Runs any program on `$PATH` (e.g. `ls`, `grep`, `cat`)
+- Uses `fork()` + `execvp()` + `waitpid()` — correct POSIX model
+- Child exits via `_exit()` to avoid double-flushing stdio
 
-### ✔ Correct POSIX Behavior
+**Shell state tracking**
 
--   Argument validation\
--   Proper error reporting with `perror()`\
--   Uses `getcwd()` for reliable directory resolution
+- Tracks `currentDir` and `previousDir` for `cd -` support
+- Error reporting via `perror()`
+- Directory resolution via `getcwd()`
 
-### ✔ Extensible Architecture
+---
 
-The project is designed with clean abstractions: - `Parser` ---
-tokenizes input into a `Command`\
-- `Executor` --- dispatches builtins or external programs\
-- `Builtins` --- handles shell-internal commands\
-- `Shell` --- main REPL loop\
-- `IshellContext` --- stores state shared between components
+## Project Structure
 
-## 🖥 Integration With Qt (Upcoming)
+```
+Mini-Shell/
+├── include/
+│   ├── builtins/
+│   │   └── builtins.hpp
+│   ├── command/
+│   │   └── command.hpp
+│   ├── executor/
+│   │   └── executor.hpp
+│   ├── parser/
+│   │   └── parser.hpp
+│   ├── shell/
+│   │   └── shell.hpp
+│   ├── utils/
+│   │   └── utils.hpp
+│   └── Interface/
+│       └── IshellContext.hpp
+├── src/
+│   ├── builtins/
+│   │   └── builtins.cpp
+│   ├── command/
+│   │   └── command.cpp
+│   ├── executor/
+│   │   └── executor.cpp
+│   ├── parser/
+│   │   └── parser.cpp
+│   ├── shell/
+│   │   └── shell.cpp
+│   ├── utils/
+│   │   └── utils.cpp
+│   └── main.cpp
+├── docs/
+│   ├── architecture/
+│   │   └── architecture.md
+│   └── diagrams/
+│       ├── shell_sequence_diagram.svg
+│       ├── shell_class_diagram.svg
+│       ├── parser_class_diagram.svg
+│       ├── executor_class_diagram.svg
+│       ├── builtins_class_diagram.svg
+│       └── command_class_diagram.svg
+├── tests/
+├── CMakeLists.txt
+└── README.md
+```
 
-This shell backend will be integrated into a **Qt-based terminal
-emulator**, where: - The C++ shell runs as the backend interpreter\
-- Qt provides a GUI terminal view, input handling, output rendering, and
-theme customization
+**Component responsibilities**
 
-## 📦 Project Structure
+- `Parser` — tokenizes raw input into a `Command` struct
+- `Executor` — dispatches to builtins or forks an external process
+- `Builtins` — implements shell-internal commands (`cd`, `pwd`, `exit`)
+- `Shell` — owns the REPL loop (read → parse → execute → repeat)
+- `IshellContext` — interface for shell state shared across components
+- `Utils` — shared helpers
 
-    .
-    ├── include/
-    │   ├── builtins/
-    │   ├── executor/
-    │   ├── parser/
-    │   ├── shell/
-    │   ├── command/
-    |   └── Interface/
-    ├── src/
-    │   ├── builtins/
-    │   ├── executor/
-    │   ├── parser/
-    │   ├── shell/
-    │   ├── command/
-    |   └── main.cpp
-    ├── CMakeLists.txt
-    └── README.md
+---
 
-## 🔧 Build Instructions
+## Build
 
-### Requirements
+**Requirements**
 
--   C++17 or newer\
--   Linux/Unix environment\
--   CMake (≥ 3.10)\
--   g++ or clang++
+- C++17 or newer
+- CMake ≥ 3.10
+- `g++` or `clang++`
+- Linux / Unix
 
-### Build
+**Steps**
 
-``` bash
-git clone https://github.com/<your-user>/<your-repo>.git
-cd <your-repo>
+```bash
+git clone https://github.com/KagE-Akumaa/Mini-Shell.git
+cd Mini-Shell
 mkdir build && cd build
 cmake ..
 make
+./mini_shell
 ```
 
-### Run
+---
 
-``` bash
-./mini-shell
-```
+## Usage
 
-## ✨ Examples
-
-### Run a builtin:
-
-``` bash
+```bash
 mini-shell> pwd
-```
+/home/user
 
-### Run external command:
-
-``` bash
 mini-shell> ls -la
-```
 
-### Switch to previous directory:
+mini-shell> cd /tmp
 
-``` bash
-mini-shell> cd -
-```
+mini-shell> cd -          # back to previous directory
 
-### Exit:
-
-``` bash
 mini-shell> exit
 ```
 
-## 📌 Roadmap
+---
 
--   [ ] Add pipes (`|`)
--   [ ] Add redirection (`>`, `>>`, `<`)
--   [ ] Support environment variables
--   [ ] Command history
--   [ ] Qt terminal integration
+## Roadmap
 
-## 🤝 Contributing
+- [ ] Pipe support (`cmd1 | cmd2`)
+- [ ] I/O redirection (`>`, `>>`, `<`)
+- [ ] Environment variable expansion (`$VAR`)
+- [ ] Command history (up/down arrows)
+- [ ] Signal handling (`Ctrl+C`, `Ctrl+Z`)
 
-Contributions are welcome!
+---
 
-## 📄 License
+## License
 
-MIT License.
+MIT
