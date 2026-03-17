@@ -2,7 +2,7 @@
 
 A lightweight Unix shell implemented in modern C++17. Supports built-in commands, external program execution via `fork`/`execvp`, and a clean layered architecture designed for extensibility.
 
-> Demo GIF coming soon — recorded with asciinema
+ ![Demo](demo.gif)
 
 ---
 
