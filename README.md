@@ -133,7 +133,7 @@ mini-shell> exit
 ## Roadmap
 
 - [ ] Pipe support (`cmd1 | cmd2`)
-- [ ] I/O redirection (`>`, `>>`, `<`)
+- [x] I/O redirection (`>`, `>>`, `<`)
 - [ ] Environment variable expansion (`$VAR`)
 - [ ] Command history (up/down arrows)
 - [ ] Signal handling (`Ctrl+C`, `Ctrl+Z`)
