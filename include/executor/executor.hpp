@@ -3,12 +3,13 @@
 #include "command/command.hpp"
 
 class Executor {
-private:
-  Builtins *builtin;
+  private:
+    Builtins *builtin;
 
-public:
-  Executor(Builtins *builtin);
-  void execute(Command &cmd);
-  void executeBuiltin(Command &cmd);
-  void executeExternal(Command &cmd);
+  public:
+    Executor(Builtins *builtin);
+    void execute(Command &cmd);
+    void executeBuiltin(Command &cmd);
+    void executePipes(Command &cmd);
+    void executeExternal(Command &cmd);
 };
