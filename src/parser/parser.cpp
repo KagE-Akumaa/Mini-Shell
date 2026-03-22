@@ -6,6 +6,7 @@ std::optional<Command> Parser::parse(const std::string &input) const {
     std::vector<std::string> tokens;
     std::vector<Redirection> redirection;
 
+    // NOTE: Remember to std::move(unique_ptr) to change the ownership
     std::unique_ptr<Pipes> piping;
 
     while (ss >> token) {
@@ -41,6 +42,8 @@ std::optional<Command> Parser::parse(const std::string &input) const {
 
     std::vector<std::string> arguments;
 
+    // NOTE: if piping exists then the remaining tokens + redirection belongs to
+    // rightSide of pipe
     if (piping) {
         piping->rightSide = std::make_unique<Command>(
             tokens[0],

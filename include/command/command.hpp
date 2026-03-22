@@ -8,6 +8,9 @@ struct Redirection {
     std::string operand;
     std::string fileDesc;
 };
+// NOTE: Pipes contain 2 sides right and left and it also has all the things
+// which
+//  command object consists of
 struct Pipes {
     std::unique_ptr<Command> leftSide;
     std::unique_ptr<Command> rightSide;

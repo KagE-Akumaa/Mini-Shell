@@ -43,12 +43,18 @@ void Executor::executePipes(Command &cmd) {
         auto &name = left->getProgram();
         auto &arguments = left->getArguments();
         auto &redirection = left->getRedirection();
+        // NOTE: Redirect stdout to pipe write end — left child's output flows
+        // into the pipe
         if (dup2(fd[1], STDOUT_FILENO) == -1) {
             perror("dup2");
             _exit(EXIT_FAILURE);
         }
         close(fd[1]);
-        // No need for read end close it
+        // NOTE: No need for read end close it if not closed the right child
+        // could potentially never get EOF because the read end is still open
+        // somewhere.
+        // Rule to remember: - Every process should close every pipe end it
+        // doesn't use, immediately after forking.
         close(fd[0]);
 
         // NOTE: Need to think about this
@@ -57,9 +63,6 @@ void Executor::executePipes(Command &cmd) {
 
             _exit(EXIT_SUCCESS);
         }
-
-        // TODO: need to execvp() but for that we need the parser to parse it
-        // properly
 
         for (auto &r : redirection) {
             // NOTE: 0644 is the standard permission (owner read/write,
@@ -153,20 +156,22 @@ void Executor::executePipes(Command &cmd) {
         auto &arguments = right->getArguments();
         auto &redirection = right->getRedirection();
 
+        // NOTE: Redirect stdin to pipe read end — right child reads from pipe
+        // instead of terminal
         if (dup2(fd[0], STDIN_FILENO) == -1) {
             perror("dup2");
             _exit(EXIT_FAILURE);
         }
         close(fd[0]);
-        // No need for write end close it
+        // NOTE: Left child owns the write end — keeping it open here would
+        // prevent
+        // the right child from ever seeing EOF on its read end.
         close(fd[1]);
 
         if (builtin->isBuiltin(name)) {
             executeBuiltin(*right);
             _exit(EXIT_SUCCESS);
         }
-        // TODO: need to execvp() but for that we need the parser to parse it
-        // properly
         for (auto &r : redirection) {
             // NOTE: 0644 is the standard permission (owner read/write,
             // group/others read). Without it, the created file gets random
@@ -246,6 +251,10 @@ void Executor::executePipes(Command &cmd) {
         _exit(EXIT_FAILURE);
     }
     // Parent need to close fd[2]
+    // NOTE: why to close both - kernel has a record of each read and write if
+    // we dont close it , it will cause the system to hang because if read is
+    // open kernel expects that some program will read from it same for write
+    // and could not get to the eof
     close(fd[0]);
     close(fd[1]);
     waitpid(pid1, nullptr, 0);
